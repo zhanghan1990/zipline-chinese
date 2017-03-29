@@ -307,8 +307,8 @@ def load_data(indexes=None,stockList=None,start=None,end=None,adjusted=True):
     """
     
 
-    assert indexes is not None or stocks is not None, """
-must specify stocks or indexes"""
+    assert indexes is not None or stockList is not None, """
+must specify stockList or indexes"""
 
     if start is None:
         start = "2010-01-01"
@@ -328,6 +328,9 @@ must specify stocks or indexes"""
         stocks=l.getstocklist(stockList)
     else:
         stocks=stockList
+    
+    print stocks
+
     if stocks is not None:
         for stock in stocks:
             stkd= l.getstockdaily(stock,start,end)
