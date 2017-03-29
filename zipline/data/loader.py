@@ -329,7 +329,7 @@ must specify stockList or indexes"""
     else:
         stocks=stockList
     
-    print stocks
+    #print stocks
 
     if stocks is not None:
         for stock in stocks:
