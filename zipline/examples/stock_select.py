@@ -26,7 +26,7 @@ mpl.rcParams['axes.unicode_minus'] = False
 
 # loading the data
 input_data = load_data(
-    stockList=['002057'],
+    stockList='hs300',
     start="2015-11-04",
     end="2016-01-16"
 )
