@@ -26,7 +26,7 @@ mpl.rcParams['axes.unicode_minus'] = False
 
 # loading the data
 input_data = load_data(
-    stockList='hs300',
+    stockList=['000001','000002'],
     start="2015-11-04",
     end="2016-01-16"
 )
@@ -46,35 +46,21 @@ def analyze(context=None, results=None):
 
 
 def initialize(context):
-    context.has_ordered = False
     set_commission(OrderCost(open_tax=0,close_tax=0.001,open_commission=0.0003,close_commission=0.0003,close_today_commission=0,min_commission=5))
     set_long_only()
 
 def handle_data(context, data):
+    for stock in data:
+        closeprice=history(5,'1d','close')
+        #print closeprice,closeprice[sid(stock)][1]
+        if closeprice[sid(stock)][1]>closeprice[sid(stock)][2] and closeprice[sid(stock)][2]>closeprice[sid(stock)][3]:
+            order(stock, 300)
+        elif closeprice[sid(stock)][1]<closeprice[sid(stock)][2] and closeprice[sid(stock)][2]<closeprice[sid(stock)][3]:
+            order(stock, -300)
 
-    #输出每天持仓情况
 
-    if not context.has_ordered:
-        for stock in data:
-            #openprice=history(3, '1d', 'open')
-            closeprice=history(5,'1d','close')
-            print get_datetime(),closeprice[sid(stock)][1],closeprice[sid(stock)][2],closeprice[sid(stock)][3]
-            #print closeprice,closeprice[sid(stock)][1]
-            if closeprice[sid(stock)][1]>closeprice[sid(stock)][2] and closeprice[sid(stock)][2]>closeprice[sid(stock)][3]:
-                print "buy",get_datetime()
-                order(stock, 300)
-            elif closeprice[sid(stock)][1]<closeprice[sid(stock)][2] and closeprice[sid(stock)][2]<closeprice[sid(stock)][3]:
-                print "sell",get_datetime()
-                order(stock, -300)
-
-# capital_base is the base value of capital
-#
 algo = TradingAlgorithm(initialize=initialize, handle_data=handle_data,capital_base=10000)
 
-#print input_data
-#api: print all the api function
-#print algo.all_api_methods()
 results = algo.run(input_data)
-print results
-#print results['benchmark_period_return'],results['portfolio_value']
+
 analyze(results=results)
