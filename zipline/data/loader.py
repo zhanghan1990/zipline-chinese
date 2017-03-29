@@ -301,10 +301,12 @@ def ensure_treasury_data(bm_symbol, first_date, last_date, now):
 
 
 
-def load_data(indexes=None,stocks=None,start=None,end=None,adjusted=True):
+def load_data(indexes=None,stockList=None,start=None,end=None,adjusted=True):
     """
     load stocks from Mongo
     """
+    
+
     assert indexes is not None or stocks is not None, """
 must specify stocks or indexes"""
 
@@ -321,7 +323,11 @@ must specify stocks or indexes"""
 
     l=LoadDataCVS(constants.IP,constants.PORT)
     l.Conn()
-    
+
+    if stockList=="hs300" or stockList=="zz500" or stockList=="sz50" or stockList=="st":
+        stocks=l.getstocklist(stockList)
+    else:
+        stocks=stockList
     if stocks is not None:
         for stock in stocks:
             stkd= l.getstockdaily(stock,start,end)
