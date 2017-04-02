@@ -1,8 +1,5 @@
 #encoding:utf-8
 import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
-
 
 #verion1: get all companies data from tushare and store them in Mongodb
 import pymongo
@@ -14,14 +11,16 @@ import pandas as pd
 from collections import OrderedDict
 import pytz
 import types 
-
 import requests
 from io import BytesIO, StringIO
 import os
 import click
 import re
+from os import listdir
+from os.path import isfile, join
+from os import walk
 
-
+from pandas import DataFrame
 
 
 
@@ -120,10 +119,15 @@ class LoadDataCVS:
         if kind =='st':
             for t in self.pool['st'].find():
                 ret.append(t['code'])
+        if kind == 'all':
+            for t in self.pool['all'].find():
+                ret.append(t['codes'])
+            
         return ret 
         
         #get daily stock information from database
         #return dataframe which contains the information we set in the parameters
+
     def getstockdaily(self,code,start,end):
         total=[]
         startdate = datetime.datetime.strptime(start, "%Y-%m-%d")
@@ -273,13 +277,24 @@ class LoadDataCVS:
         df = pd.DataFrame(data=list(totaldata),index=series["Time Period"],columns = ['1month', '3month','6month', '1year', '2year', '3year', '5year', '7year', '10year', '20year', '30year'])
         return df.sort_index().tz_localize('UTC')
 
-
-
-
-
-
+    def storageStockName(self):
+        totalstock=[]
+        onlyfiles = [ f for f in listdir(self.stockdata) if isfile(join(self.stockdata,f)) ]
+        for f in onlyfiles:
+            s=f.split('.')
+            name=s[0][2:8]
+            totalstock.append(name)
+            
+        data = {'codes': totalstock}
+        frame = DataFrame(data)
+        
+        self.pool['all'].insert_many(json.loads(frame.to_json(orient='records')))
+        print frame
+            
+        
 
 if __name__ == '__main__':
     l=LoadDataCVS('166.111.68.233',27017)
     l.Conn()
-    print l.read_treasure_from_mongodb("2015-01-01","2017-01-10")
+    #l.storageStockName()
+    print l.getstocklist('all')

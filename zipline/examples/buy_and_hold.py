@@ -69,7 +69,7 @@ def handle_data(context, data):
 
 # capital_base is the base value of capital
 #
-algo = TradingAlgorithm(initialize=initialize, handle_data=handle_data,capital_base=10000)
+algo = TradingAlgorithm(initialize=initialize, handle_data=handle_data,capital_base=10000,benchmark='399004')
 
 #print input_data
 #api: print all the api function

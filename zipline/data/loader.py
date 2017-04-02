@@ -311,7 +311,7 @@ def load_data(indexes=None,stockList=None,start=None,end=None,adjusted=True):
 must specify stockList or indexes"""
 
     if start is None:
-        start = "2010-01-01"
+        start = "1990-01-01"
 
     if start is not None and end is not None:
         startdate = datetime.datetime.strptime(start, "%Y-%m-%d")
@@ -324,7 +324,7 @@ must specify stockList or indexes"""
     l=LoadDataCVS(constants.IP,constants.PORT)
     l.Conn()
 
-    if stockList=="hs300" or stockList=="zz500" or stockList=="sz50" or stockList=="st":
+    if stockList=="hs300" or stockList=="zz500" or stockList=="sz50" or stockList=="all":
         stocks=l.getstocklist(stockList)
     else:
         stocks=stockList

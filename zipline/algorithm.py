@@ -1,3 +1,4 @@
+#encoding:utf-8
 #
 # Copyright 2014 Quantopian, Inc.
 #
@@ -107,6 +108,7 @@ from zipline.protocol import Event
 
 from zipline.history import HistorySpec
 from zipline.history.history_container import HistoryContainer
+from zipline.utils.events import NthTradingDayOfMonth,NthTradingDayOfWeek
 
 DEFAULT_CAPITAL_BASE = float("1.0e5")
 
@@ -203,6 +205,12 @@ class TradingAlgorithm(object):
 
         self.long=True
 
+
+
+        self.benchmark=kwargs.pop('benchmark','000001')
+
+
+
         # default components for transact
         self.slippage = VolumeShareSlippage()
         self.commission = OrderCost(open_tax=0,close_tax=0.001,open_commission=0.0003,close_commission=0.0003,close_today_commission=0,min_commission=5)
@@ -213,7 +221,7 @@ class TradingAlgorithm(object):
         self.trading_environment = kwargs.pop('env', None)
 
         if self.trading_environment is None:
-            self.trading_environment = TradingEnvironment()
+            self.trading_environment = TradingEnvironment(bm_symbol=self.benchmark)
 
         # Update the TradingEnvironment with the provided asset metadata
         self.trading_environment.write_data(
@@ -1447,6 +1455,33 @@ class TradingAlgorithm(object):
         # Return the pipeline to allow expressions like
         # p = attach_pipeline(Pipeline(), 'name')
         return pipeline
+    
+    @api_method
+    def get_fundamentals(self,query_object, date=None, statDate=None):
+        """
+        Get the base fundamentals from mongodb
+        """
+        pass
+
+    @api_method
+    def run_monthly(self,func, monthday):
+        '''
+        function that performs every monthdayth of month
+        '''
+        date_rule=NthTradingDayOfMonth(monthday)
+        self.schedule_function(func,date_rule,time_rule=None,half_days=True)
+
+
+
+
+    @api_method
+    def run_weekly(self,func, weekday):
+        '''
+        function that performs every weedayth of week
+        '''
+        date_rule=NthTradingDayOfWeek(weekday)
+        self.schedule_function(func,date_rule,time_rule=None,half_days=True)
+       
 
     @api_method
     @require_initialized(PipelineOutputDuringInitialize())
