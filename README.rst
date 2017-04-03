@@ -10,6 +10,15 @@ Zipline:当前在线的量化平台基本都是基于zipline进行开发，使�
 
 `python setup.py install`
 
+＃本版本完成的主要工作
+
+- 交易日历纠正，从1990年开始的所有有效交易日都包含其中，剔除非交易时段
+- A股数据源，把数据写入mongodb中，每次从mongodb中读取需要的数据
+- benchmark，使用A股的几个标准（HS300指数等）
+- return 计算，计算alpha和beta当前使用中国国债作为基准
+- 手续费模型设定
+
+
 # 关于数据：
 
 - 您可以使用自己的数据，也可以使用我配置的数据源，数据源我已经配置好，如果自己配置，需要修改文件 data/constants.py 下的IP和PORT
