@@ -37,6 +37,7 @@ def handle_data(context, data):
     ma10 = close_data[-11:-2].mean()
     # 取得当前的现金
 
+    print get_datetime(),ma5,ma10
     cash = context.portfolio.cash
     
     #print ma5[sid(symbol(context.security))],ma10[sid(stock)],cash,symbol(context.security)
@@ -49,7 +50,9 @@ def handle_data(context, data):
         order_target(symbol(context.security), 0)
         # 记录这次卖出
         #log.info("Selling %s" % (context.security))
-    record(ma51=ma5,ma101=ma10)
+
+    #record(short_mavg=ma)
+
     # # 绘制五日均线价格
     # record(ma5=ma5)
     # # 绘制十日均线价格
@@ -62,37 +65,41 @@ def analyze(context=None, results=None):
 
     fig = plt.figure()
     ax1 = fig.add_subplot(211)
-    results.portfolio_value.plot(ax=ax1)
-    ax1.set_ylabel('Portfolio value (USD)')
 
-    ax2 = fig.add_subplot(212)
-    ax2.set_ylabel('Price (USD)')
+    results.algorithm_period_return.plot(ax=ax1,color='blue',legend=u'策略收益')
+    ax1.set_ylabel(u'收益')
+    results.benchmark_period_return.plot(ax=ax1,color='red',legend=u'基准收益')
 
-    # If data has been record()ed, then plot it.
-    # Otherwise, log the fact that no data has been recorded.
-    if ('ma51' in results and 'ma101' in results):
-        results[['ma51', 'ma101']].plot(ax=ax2)
 
-        trans = results.ix[[t != [] for t in results.transactions]]
-        buys = trans.ix[[t[0]['amount'] > 0 for t in
-                         trans.transactions]]
-        sells = trans.ix[
-            [t[0]['amount'] < 0 for t in trans.transactions]]
-        ax2.plot(buys.index, results.short_mavg.ix[buys.index],
-                 '^', markersize=10, color='m')
-        ax2.plot(sells.index, results.short_mavg.ix[sells.index],
-                 'v', markersize=10, color='k')
-        plt.legend(loc=0)
-    else:
-        msg = 'AAPL, short_mavg & long_mavg data not captured using record().'
-        ax2.annotate(msg, xy=(0.1, 0.5))
-        log.info(msg)
+
+    # ax2 = fig.add_subplot(212)
+    # ax2.set_ylabel('Price (USD)')
+
+    # # If data has been record()ed, then plot it.
+    # # Otherwise, log the fact that no data has been recorded.
+    # if ('ma51' in results and 'ma101' in results):
+    #     results[['ma51', 'ma101']].plot(ax=ax2)
+
+    #     trans = results.ix[[t != [] for t in results.transactions]]
+    #     buys = trans.ix[[t[0]['amount'] > 0 for t in
+    #                      trans.transactions]]
+    #     sells = trans.ix[
+    #         [t[0]['amount'] < 0 for t in trans.transactions]]
+    #     ax2.plot(buys.index, results.short_mavg.ix[buys.index],
+    #              '^', markersize=10, color='m')
+    #     ax2.plot(sells.index, results.short_mavg.ix[sells.index],
+    #              'v', markersize=10, color='k')
+    #     plt.legend(loc=0)
+    # else:
+    #     msg = 'AAPL, short_mavg & long_mavg data not captured using record().'
+    #     ax2.annotate(msg, xy=(0.1, 0.5))
+    #     log.info(msg)
 
     plt.show()
 
 # capital_base is the base value of capital
 #
-algo = TradingAlgorithm(initialize=initialize, handle_data=handle_data,capital_base=10000,benchmark='000300',start=datetime(2015, 11, 04, tzinfo=pytz.utc),end=datetime(2016, 01, 16, tzinfo=pytz.utc))
+algo = TradingAlgorithm(initialize=initialize, handle_data=handle_data,capital_base=10000,benchmark='000300')
 
 #print input_data
 #api: print all the api function

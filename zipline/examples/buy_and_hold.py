@@ -58,12 +58,13 @@ def handle_data(context, data):
         for stock in data:
             #openprice=history(3, '1d', 'open')
             closeprice=history(5,'1d','close')
-            print get_datetime(),closeprice[sid(stock)][1],closeprice[sid(stock)][2],closeprice[sid(stock)][3]
+            #-2:昨天,-3 前天.-4 大前天
+            print get_datetime(),closeprice[sid(stock)][0],closeprice[sid(stock)][1],closeprice[sid(stock)][2],closeprice[sid(stock)][3],closeprice[sid(stock)][4]
             #print closeprice,closeprice[sid(stock)][1]
-            if closeprice[sid(stock)][1]>closeprice[sid(stock)][2] and closeprice[sid(stock)][2]>closeprice[sid(stock)][3]:
+            if closeprice[sid(stock)][-2]>closeprice[sid(stock)][-3] and closeprice[sid(stock)][-3]>closeprice[sid(stock)][-4]:
                 print "buy",get_datetime()
                 order(stock, 300)
-            elif closeprice[sid(stock)][1]<closeprice[sid(stock)][2] and closeprice[sid(stock)][2]<closeprice[sid(stock)][3]:
+            elif closeprice[sid(stock)][-2]<closeprice[sid(stock)][-3] and closeprice[sid(stock)][-3]<closeprice[sid(stock)][-4]:
                 print "sell",get_datetime()
                 order(stock, -300)
 

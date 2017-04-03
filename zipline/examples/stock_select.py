@@ -24,12 +24,6 @@ mpl.rcParams['axes.unicode_minus'] = False
 
 
 
-# loading the data
-input_data = load_data(
-    stockList=['002057'],
-    start="2015-11-04",
-    end="2016-01-16"
-)
 def analyze(context=None, results=None):
     import matplotlib.pyplot as plt
 
@@ -44,22 +38,58 @@ def analyze(context=None, results=None):
     plt.show()
 
 
-def weekly_test(context,data):
-    #输出当前时间
-    print get_datetime()
+
+# loading the data
+input_data = load_data(
+    stockList= ['000001','000002','000004','000005'],
+    start="2013-11-01",
+    end="2016-01-16"
+)
 
 
 def initialize(context):
-    set_commission(OrderCost(open_tax=0,close_tax=0.001,open_commission=0.0003,close_commission=0.0003,close_today_commission=0,min_commission=5))
-    set_long_only()
-    run_weekly(weekly_test,1)
+    # 初始化此策略
+    # 设置我们要操作的股票池
+    context.stocks = ['000001','000002','000004','000005']
 
+
+
+# 每个单位时间(如果按天回测,则每天调用一次,如果按分钟,则每分钟调用一次)调用一次
 def handle_data(context, data):
-    pass
+    
+    # context.i+=1
+    # if context.i<=5:
+    #     return
+    # 循环每只股票
+
+    closeprice= history(5,'1d','close')
+    for security in context.stocks:
+        vwap=(closeprice[symbol(security)][-2]+closeprice[symbol(security)][-3]+closeprice[symbol(security)][-4])/3
+        price = closeprice[symbol(security)][-2]
+        print get_datetime(),security,vwap,price
+        # # 如果上一时间点价格小于三天平均价*0.995，并且持有该股票，卖出
+        if price < vwap * 0.995:
+            # 下入卖出单
+            order(symbol(security),-300)
+            print get_datetime(),("Selling %s" % (security))
+            # 记录这次卖出
+            #log.info("Selling %s" % (security))
+        # 如果上一时间点价格大于三天平均价*1.005，并且有现金余额，买入
+        elif price > vwap * 1.005:
+            # 下入买入单
+            order(symbol(security),300)
+            # 记录这次买入
+            print get_datetime(),("Buying %s" % (security))
+            #log.info("Buying %s" % (security))
 
 
-algo = TradingAlgorithm(initialize=initialize, handle_data=handle_data,capital_base=10000)
+algo = TradingAlgorithm(initialize=initialize, handle_data=handle_data,capital_base=100000,benchmark='000300')
 
+#print input_data
+#api: print all the api function
+#print algo.all_api_methods()
 results = algo.run(input_data)
-
+#print results['benchmark_period_return'],results['portfolio_value']
 analyze(results=results)
+
+
