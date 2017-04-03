@@ -8,7 +8,7 @@ Zipline:当前在线的量化平台基本都是基于zipline进行开发，使�
 
 # 安装方法：
 
-`python setup.py install`_
+`python setup.py install`
 
 # 关于数据：
 
@@ -20,6 +20,7 @@ Zipline:当前在线的量化平台基本都是基于zipline进行开发，使�
 -在examples下面有3个例子，这3个例子可以满足基本的回测需求，这三个例子我和joinquant做了比对，差距很小（ps，完全一样还是很难，手续费那里有问题，我会继续修改)
 
 ＃联系方式
+
 欢迎感兴趣的朋友加入到这个项目来，有问题请给我发邮件：
 zganghanhan@foxmail.com
 
