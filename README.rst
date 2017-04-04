@@ -14,11 +14,11 @@ Zipline:当前在线的量化平台基本都是基于zipline进行开发，使�
 
 以ubuntu 为例：
 
-－sudo pip install virtualenv
+- sudo pip install virtualenv
 - git clone https://github.com/zhanghan1990/zipline
 - cd zipline
 - . venv/bin/activate
-－python setup.py install
+- python setup.py install
 
 
 安装过程中出现的问题
