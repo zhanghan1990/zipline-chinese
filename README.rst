@@ -97,4 +97,11 @@ python setup.py install
 欢迎感兴趣的朋友加入到这个项目来，有问题请给我发邮件：
 zganghanhan@foxmail.com
 
+加入我们
+=======
+欢迎有兴趣的朋友伙伴加入我们的开源讨论群：
+
+
+QQ群：556125593
+
 
