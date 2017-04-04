@@ -70,31 +70,6 @@ def analyze(context=None, results=None):
     ax1.set_ylabel(u'收益')
     results.benchmark_period_return.plot(ax=ax1,color='red',legend=u'基准收益')
 
-
-
-    # ax2 = fig.add_subplot(212)
-    # ax2.set_ylabel('Price (USD)')
-
-    # # If data has been record()ed, then plot it.
-    # # Otherwise, log the fact that no data has been recorded.
-    # if ('ma51' in results and 'ma101' in results):
-    #     results[['ma51', 'ma101']].plot(ax=ax2)
-
-    #     trans = results.ix[[t != [] for t in results.transactions]]
-    #     buys = trans.ix[[t[0]['amount'] > 0 for t in
-    #                      trans.transactions]]
-    #     sells = trans.ix[
-    #         [t[0]['amount'] < 0 for t in trans.transactions]]
-    #     ax2.plot(buys.index, results.short_mavg.ix[buys.index],
-    #              '^', markersize=10, color='m')
-    #     ax2.plot(sells.index, results.short_mavg.ix[sells.index],
-    #              'v', markersize=10, color='k')
-    #     plt.legend(loc=0)
-    # else:
-    #     msg = 'AAPL, short_mavg & long_mavg data not captured using record().'
-    #     ax2.annotate(msg, xy=(0.1, 0.5))
-    #     log.info(msg)
-
     plt.show()
 
 # capital_base is the base value of capital
