@@ -10,7 +10,7 @@ Zipline:当前在线的量化平台基本都是基于zipline进行开发，使�
 ========
 
 
-运行环境：linux, OSX，建议不要使用windows,因为zipline涉及到gcc的编译，windows可能编译过程中有一些问题, windows的用户，可以使用virtual box虚拟机，虚拟机地址
+运行环境：linux, OSX，建议不要使用windows,因为zipline涉及到gcc的编译，windows可能编译过程中有一些问题
 
 
 以ubuntu 为例：
@@ -47,7 +47,15 @@ version_1.0 完成的主要工作
 
 - 您可以使用自己的数据，也可以使用我配置的数据源，数据源我已经配置好，如果自己配置，需要修改文件 data/constants.py 下的IP和PORT
 - 本版本的数据源,只更新到2017.02.28,后面我会每天更新数据
-- 日线数据导入，参考文件
+
+本地数据导入
+===========
+- 交易数据地址：
+http://pan.baidu.com/s/1i4GZWFF
+－关于数据导入：
+脚本 https://github.com/zhanghan1990/zipline/blob/master/zipline/data/mongodb.py 提供数据导入，修改line 29为您数据解压缩位置
+然后执行脚本python mongodb.py
+
 
 关于例子
 ========
