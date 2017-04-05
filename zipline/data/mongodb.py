@@ -21,15 +21,14 @@ from os.path import isfile, join
 from os import walk
 
 from pandas import DataFrame
-from constants import BASEDIR
 
 
 
 class LoadDataCVS:
 
-    basedir="~/zipline"
-    stockdata=self.basedir+"/tradedata/stock data"
-    indexdata=self.basedir+"/tradedata/index data"
+    basedir="/home/zipline/zipline"
+    stockdata=basedir+"/stock data"
+    indexdata=basedir+"/index data"
 
     #treasurvity 
     in_package_data = range(2002, 2017)
@@ -57,7 +56,7 @@ class LoadDataCVS:
         
         
     #store data information into database, do not always call this
-    def storagedata(self):
+    def storagedaily(self):
         #get the filelist
         onlyfiles = [ f for f in listdir(self.stockdata) if isfile(join(self.stockdata,f)) ]
         #read from using pandas
@@ -299,11 +298,11 @@ class LoadDataCVS:
 if __name__ == '__main__':
     l=LoadDataCVS('127.0.0.1',27017)
     l.Conn()
-    l.stockdata()
+    l.storagedaily()
     l.storageindex()
     l.storagepool()
     l.storageStockName()
     l.insert_zipline_treasure_format()
     
     #l.storageStockName()
-    print l.getstocklist('all')
+    #print l.getstocklist('all')
