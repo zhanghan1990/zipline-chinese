@@ -52,7 +52,8 @@ version_1.0 完成的主要工作
 ===========
 - 交易数据地址：
 http://pan.baidu.com/s/1i4GZWFF
-－关于数据导入：
+
+- 关于数据导入：
 脚本 https://github.com/zhanghan1990/zipline/blob/master/zipline/data/mongodb.py 提供数据导入，修改line 29为您数据解压缩位置
 然后执行脚本python mongodb.py
 
