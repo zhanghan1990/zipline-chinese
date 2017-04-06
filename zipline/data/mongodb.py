@@ -297,11 +297,11 @@ class LoadDataCVS:
 
 if __name__ == '__main__':
     l=LoadDataCVS('127.0.0.1',27017)
-    l.Conn()
-    l.storagedaily()
-    l.storageindex()
-    l.storagepool()
-    l.storageStockName()
+    # l.Conn()
+    # l.storagedaily()
+    # l.storageindex()
+    # l.storagepool()
+    # l.storageStockName()
     l.insert_zipline_treasure_format()
     
     #l.storageStockName()

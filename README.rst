@@ -19,9 +19,13 @@ https://github.com/zhanghan1990/zipline/wiki
 虚拟机密码为:zipline
 
 具体使用方法：打开virtual box ,输入以下命令
+
 - service mongodb start
+
 - source zipline/zip_env/bin/activate
+
 - sudo jupyter notebook
+
 - ifconfig
 
 得到虚拟机的IP 地址，例如IP为：192.168.1.120，则在windows浏览器输入 192.168.1.120:8888
