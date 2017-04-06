@@ -16,6 +16,8 @@ https://github.com/zhanghan1990/zipline/wiki
 
 （1）windows 用户可以下载virtual box，在这个镜像中，集成了数据，和开发环境，以及ipython notebook,virtual box 虚拟机地址： https://pan.baidu.com/s/1bp5roxL
 
+虚拟机密码为:zipline
+
 具体使用方法：打开virtual box ,输入以下命令
 - service mongodb start
 - source zipline/zip_env/bin/activate
