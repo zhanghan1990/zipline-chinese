@@ -1,19 +1,27 @@
-Zipline
+Zipline－一个正在成长的项目
 =======
-
 Zipline:当前在线的量化平台基本都是基于zipline进行开发，使用这些平台，首先，自己的
 策略会泄密，其次，这些平台速度慢，而且不够灵活。
 然而，A股并不能直接使用zipline，需要对数据,基准，交易日期，手续费等部分做修改。
 本项目修改zipline平台，以使得其能适用于A股市场。
+项目文档：https://github.com/zhanghan1990/zipline/wiki/zipline-A-股文档#先写一个简单而完整的策略
 
 安装方法
 ========
+运行环境：linux, OSX，建议不要使用windows,因为zipline涉及到gcc的编译，windows可能编译过程中有一些问题。
+
+（1）windows 用户可以下载virtual box，在这个镜像中，集成了数据，和开发环境，以及ipython notebook,virtual box 虚拟机地址： https://pan.baidu.com/s/1bp5roxL
+
+具体使用方法：打开virtual box ,输入以下命令
+- service mongodb start
+- source zipline/zip_env/bin/activate
+- sudo jupyter notebook
+- ifconfig
+
+得到虚拟机的IP 地址，例如IP为：192.168.1.120，则在windows浏览器输入 192.168.1.120:8888
 
 
-运行环境：linux, OSX，建议不要使用windows,因为zipline涉及到gcc的编译，windows可能编译过程中有一些问题
-
-
-以ubuntu 为例：
+(2)对于本地安装，以ubuntu 为例：
 
 - git clone https://github.com/zhanghan1990/zipline
 - cd zipline
@@ -75,5 +83,3 @@ zganghanhan@foxmail.com
 
 
 QQ群：556125593
-
-
