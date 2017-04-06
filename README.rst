@@ -4,11 +4,12 @@ Zipline:当前在线的量化平台基本都是基于zipline进行开发，使�
 策略会泄密，其次，这些平台速度慢，而且不够灵活。
 然而，A股并不能直接使用zipline，需要对数据,基准，交易日期，手续费等部分做修改。
 本项目修改zipline平台，以使得其能适用于A股市场。
-项目文档：
-```
-https://github.com/zhanghan1990/zipline/wiki/zipline-A-股文档#先写一个简单而完整的策略
 
-```
+
+项目文档：
+
+https://github.com/zhanghan1990/zipline/wiki
+
 安装方法
 ========
 运行环境：linux, OSX，建议不要使用windows,因为zipline涉及到gcc的编译，windows可能编译过程中有一些问题。
