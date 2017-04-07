@@ -20,7 +20,7 @@ https://github.com/zhanghan1990/zipline/wiki
 
 具体使用方法：打开virtual box ,输入以下命令
 
-- service mongodb start
+- sudo service mongodb start
 
 - source zipline/zip_env/bin/activate
 
@@ -47,6 +47,10 @@ https://github.com/zhanghan1990/zipline/wiki
 - pip install xlrd
 - pip3 install jupyter
 
+
+version_1.1.1 完成的主要工作
+=======================
+- 对history函数纠正，history[0]代表今天的价格，history[1]代表昨天价格...
 
 
 

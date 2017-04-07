@@ -64,8 +64,8 @@ def handle_data(context, data):
 
     closeprice= history(5,'1d','close')
     for security in context.stocks:
-        vwap=(closeprice[symbol(security)][-2]+closeprice[symbol(security)][-3]+closeprice[symbol(security)][-4])/3
-        price = closeprice[symbol(security)][-2]
+        vwap=(closeprice[symbol(security)][1]+closeprice[symbol(security)][2]+closeprice[symbol(security)][3])/3
+        price = closeprice[symbol(security)][1]
         print get_datetime(),security,vwap,price
         # # 如果上一时间点价格小于三天平均价*0.995，并且持有该股票，卖出
         if price < vwap * 0.995:

@@ -32,9 +32,9 @@ def handle_data(context, data):
     # 获取股票的收盘价
     close_data = history(12,'1d','close')
     # 取得过去五天的平均价格
-    ma5 = close_data[-6:-2].mean()
+    ma5 = close_data[1:6].mean()
     # 取得过去10天的平均价格
-    ma10 = close_data[-11:-2].mean()
+    ma10 = close_data[1:11].mean()
     # 取得当前的现金
 
     print get_datetime(),ma5,ma10

@@ -1330,7 +1330,7 @@ class TradingAlgorithm(object):
             field,
             ffill,
         )
-        return self.history_container.get_history(history_spec, self.datetime)
+        return self.history_container.get_history(history_spec, self.datetime).iloc[::-1]
 
     ####################
     # Account Controls #
