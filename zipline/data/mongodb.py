@@ -53,57 +53,6 @@ class LoadDataCVS:
         #print self.pool.collection_names()
     def Close(self):
         self.client.close()
-        
-        
-    #store data information into database, do not always call this
-    def storagedaily(self):
-        #get the filelist
-        onlyfiles = [ f for f in listdir(self.stockdata) if isfile(join(self.stockdata,f)) ]
-        #read from using pandas
-        for f in onlyfiles:
-            df = pd.read_csv(self.stockdata+"/"+f)
-            s=f.split('.')
-            name = s[0][2:8]
-            records = json.loads(df.T.to_json()).values()
-            for row in records:
-                row['date'] = datetime.datetime.strptime(row['date'], "%Y-%m-%d")
-            print name
-            self.connection[name].insert_many(records)
-            
-    #store index information into database,do not always call this
-            
-    def storageindex(self):
-        #get the filelist
-        onlyfiles = [ f for f in listdir(self.indexdata) if isfile(join(self.indexdata,f)) ]
-        #read from using pandas
-        for f in onlyfiles:
-            df = pd.read_csv(self.indexdata+"/"+f)
-            s=f.split('.')
-            name = s[0][2:8]
-            records = json.loads(df.T.to_json()).values()
-            for row in records:
-                row['date'] = datetime.datetime.strptime(row['date'], "%Y-%m-%d")
-            print name
-            self.index[name].insert_many(records)
-            
-    
-    
-    #storage stock pool into database
-    def storagepool(self):
-        #storage zz500
-        df=ts.get_zz500s()
-        self.pool['zz500'].insert_many(json.loads(df.to_json(orient='records')))
-        #hs300
-        df=ts.get_hs300s()
-        self.pool['hz300'].insert_many(json.loads(df.to_json(orient='records')))
-        #zh50
-        df=ts.get_sz50s()
-        self.pool['sz'].insert_many(json.loads(df.to_json(orient='records')))
-        #st
-        df=ts.get_st_classified()
-        self.pool['st'].insert_many(json.loads(df.to_json(orient='records')))
-        
-        
     
         
     #get the particular stock list from data base
@@ -186,73 +135,7 @@ class LoadDataCVS:
         totaldata=zip(series['date'],series['open'],series['close'],series['high'],series['low'],series['volume'])
         df = pd.DataFrame(list(totaldata))
         df.index=df.date
-        return df
-
-
-
-    def get_data(self):
-
-        in_package_data = range(2002, 2017)
-        cur_year = datetime.datetime.now().year
-        last_in_package_data = max(in_package_data)
-
-
-        # download new data
-        to_downloads = range(last_in_package_data + 1, cur_year + 1)
-
-        # frist, get ycDefIds params
-        response = requests.get(self.YIELD_MAIN_URL)
-
-        matchs = re.search(r'\?ycDefIds=(.*?)\&', response.text)
-        ycdefids = matchs.group(1)
-        assert (ycdefids is not None)
-
-        fetched_data = []
-        for year in to_downloads:
-            print('Downloading from ' + self.DONWLOAD_URL % (year, ycdefids))
-            response = requests.get(self.DONWLOAD_URL % (year, ycdefids))
-            fetched_data.append(BytesIO(response.content))
-
-        # combine all data
-
-        dfs = []
-
-        basedir = os.path.join(os.path.dirname(__file__), "xlsx")
-
-        for i in in_package_data:
-            dfs.append(pd.read_excel(os.path.join(basedir, "%d.xlsx" % i)))
-
-        for memfile in fetched_data:
-            dfs.append(pd.read_excel(memfile))
-
-        df = pd.concat(dfs)
-
-        return df
-
-    def get_pivot_data(self):
-
-        df = self.get_data()
-        return df.pivot(index=u'日期', columns=u'标准期限(年)', values=u'收益率(%)')
-
-
-
-    def insert_zipline_treasure_format(self):
-        self.treasure['treasure'].drop()
-        pivot_data = self.get_pivot_data()
-
-        frame=pivot_data[[0.08,0.25,0.5,1,2,3,5,7,10,20,30]]
-        frame['Time Period']=frame.index
-        frame['Time Period']=frame['Time Period'].astype('str')
-        frame.columns=['1month', '3month','6month', '1year', '2year', '3year', '5year', '7year', '10year', '20year', '30year','Time Period']
-        records = json.loads(frame.T.to_json()).values()
-        for row in records:
-            temp=row['Time Period']
-            temp=temp.split('T')[0]
-            row['Time Period'] = datetime.datetime.strptime(temp, "%Y-%m-%d")
-
-        self.treasure['treasure'].insert_many(records)
-       
-
+        return df      
     def read_treasure_from_mongodb(self,start,end):
 
         startdate=start
@@ -278,31 +161,3 @@ class LoadDataCVS:
         totaldata=zip(series["1month"],series["3month"],series["6month"],series["1year"],series["2year"],series["3year"],series["5year"],series["7year"],series["10year"],series["20year"],series["30year"])
         df = pd.DataFrame(data=list(totaldata),index=series["Time Period"],columns = ['1month', '3month','6month', '1year', '2year', '3year', '5year', '7year', '10year', '20year', '30year'])
         return df.sort_index().tz_localize('UTC')
-
-    def storageStockName(self):
-        totalstock=[]
-        onlyfiles = [ f for f in listdir(self.stockdata) if isfile(join(self.stockdata,f)) ]
-        for f in onlyfiles:
-            s=f.split('.')
-            name=s[0][2:8]
-            totalstock.append(name)
-            
-        data = {'codes': totalstock}
-        frame = DataFrame(data)
-        
-        self.pool['all'].insert_many(json.loads(frame.to_json(orient='records')))
-        print frame
-            
-        
-
-if __name__ == '__main__':
-    l=LoadDataCVS('127.0.0.1',27017)
-    # l.Conn()
-    # l.storagedaily()
-    # l.storageindex()
-    # l.storagepool()
-    # l.storageStockName()
-    l.insert_zipline_treasure_format()
-    
-    #l.storageStockName()
-    #print l.getstocklist('all')
