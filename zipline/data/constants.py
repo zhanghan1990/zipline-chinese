@@ -1,5 +1,5 @@
 # this is my data ip and port
-IP="166.111.68.233"
+IP="127.0.0.1"
 PORT=27017
 # this is data storage path
 basedir="/home/zipline"

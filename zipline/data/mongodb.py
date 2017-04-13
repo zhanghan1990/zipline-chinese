@@ -25,7 +25,7 @@ from pandas import DataFrame
 
 
 class LoadDataCVS:
-    
+
     #treasurvity 
     in_package_data = range(2002, 2017)
     DONWLOAD_URL = "http://yield.chinabond.com.cn/cbweb-mn/yc/downYearBzqx?year=%s&&wrjxCBFlag=0&&zblx=txy&ycDefId=%s"
@@ -44,6 +44,10 @@ class LoadDataCVS:
         self.index=self.client.index #storage index
         self.pool=self.client.pool  #storate pool
         self.treasure=self.client.treasure
+        self.oriprice=self.client.stockoriginalprice #stock original price
+        self.qfqprice=self.client.stockqfqprice #stock qfq price
+        self.hfqprice=self.client.stockhfqprice #stock hfq price
+        
         #print self.connection.collection_names()
         #print self.index.collection_names()
         #print self.pool.collection_names()
@@ -81,7 +85,7 @@ class LoadDataCVS:
         enddate=datetime.datetime.strptime(end, "%Y-%m-%d")
         series={"date":[],"open":[],"close":[],"high":[],"low":[],"volume":[],"price":[],"change":[],"code":[]}
         
-        for stockdaily in self.connection[code].find({"date": {"$gte": startdate,"$lt":enddate}}).sort("date"):
+        for stockdaily in self.oriprice[code].find({"date": {"$gte": startdate,"$lt":enddate}}).sort("date"):
             series["date"].append(stockdaily["date"])
             series["open"].append(stockdaily["open"])
             series["close"].append(stockdaily["close"])
