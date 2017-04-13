@@ -20,17 +20,15 @@ from os import listdir
 from os.path import isfile, join
 from os import walk
 from mongodb import LoadDataCVS
-
 from pandas import DataFrame
-
+import constants
 # add new data and use tushare to update data
-
 class InsertDataCVS:
 
-    basedir="/home/zipline"
-    stockdata=basedir+"/stock data"
-    indexdata=basedir+"/index data"
-    newdata=basedir+"/newdata"
+    basedir=constants.basedir
+    stockdata=constants.stockdata
+    indexdata=constants.indexdata
+    newdata=constants.newdata
 
     #treasurvity 
     in_package_data = range(2002, 2017)
@@ -62,35 +60,6 @@ class InsertDataCVS:
     def Close(self):
         self.client.close()
 
-
-    def InsertStock(self,filename):
-        dailypd=pd.read_csv(filename)
-        codes=dailypd.code
-
-        series={"date":[],"open":[],"close":[],"high":[],"low":[],"volume":[],"change":[]}
-
-
-        for i in range(0,len(codes)):
-            code=dailypd.iloc[i].code
-            codedate=dailypd.iloc[i].date
-            codeopen=dailypd.iloc[i].open
-            codehigh=dailypd.iloc[i].high
-            codelow=dailypd.iloc[i].low
-            codeclose=dailypd.iloc[i].close
-            codechange=dailypd.iloc[i].change
-            codevolume=dailypd.iloc[i].volume
-            codemoney=dailypd.iloc[i].money
-            codetrademarketvalue=dailypd.iloc[i].traded_market_value
-            codemarketvalue=dailypd.iloc[i].market_value
-            codeturnover=dailypd.iloc[i].turnover
-            codeadjustprice=dailypd.iloc[i].adjust_price
-            codereporttpye=dailypd.iloc[i].report_type
-            codereportdate=dailypd.iloc[i].report_date
-            codepe=dailypd.iloc[i].PE_TTM
-            codeps=dailypd.iloc[i].PS_TTM
-            codepc=dailypd.iloc[i].PC_TTM
-            codepb=dailypd.iloc[i].PB
-            codeadjustprice=dailypd.iloc[i].adjust_price_f
 
     #store data information into database, do not always call this
     def storagedaily(self):
@@ -125,15 +94,7 @@ class InsertDataCVS:
                 row['date'] = datetime.datetime.strptime(row['date'], "%Y-%m-%d")
 
 
-            self.oriprice[name].insert_many(records)
-
-            # check if data has this volume
-            # countstock=  self.oriprice[name].Find(bson.M{"mobile": mobile_num}).Count()
-
-            # if count > 0:
-            #     // do nothing
-            # else:
-            #     
+            self.oriprice[name].insert_many(records) 
 
 
         # get stock data in newdata dir
@@ -161,31 +122,30 @@ class InsertDataCVS:
             del df['adjust_price_f']
 
             codes=df.code
-            series={"date":[],"turnover":[],"market_value":[],"traded_market_value":[],"open":[],"close":[],"high":[],"low":[],"volume":[],"change":[],"money":[]}
+            series={}
 
 
             for i in range(0,len(codes)):
                 code=df.iloc[i].code
-                series["date"].append(df.iloc[i].date)
-                series["open"].append(df.iloc[i].open)
-                series["high"].append(df.iloc[i].high)
-                series["low"].append(df.iloc[i].low)
-                series["close"].append(df.iloc[i].close)
-                series["change"].append(df.iloc[i].change)
-                series["volume"].append(df.iloc[i].volume)
-                series["money"].append(df.iloc[i].money)
-                series["traded_market_value"].append(df.iloc[i].traded_market_value)
-                series["market_value"].append(df.iloc[i].market_value)
-                series["turnover"].append(df.iloc[i].turnover)
-                totaldata=zip(series['date'],series['open'],series['close'],series['high'],series['low'],series['volume'],series['money'],series['traded_market_value'],series['market_value'],series['turnover'])
-                df1 = pd.DataFrame(list(totaldata),columns =["date","open","close","high","low","volume","money","traded_market_value","market_value","turnover"] )
-                records = json.loads(df1.T.to_json()).values()
-                for row in records:
-                    row['date'] = datetime.datetime.strptime(row['date'], "%Y-%m-%d")
+                series["open"]=df.iloc[i].open
+                series["high"]=df.iloc[i].high
+                series["low"]=df.iloc[i].low
+                series["close"]=df.iloc[i].close
+                series["change"]=df.iloc[i].change
+                series["volume"]=df.iloc[i].volume
+                series["money"]=df.iloc[i].money
+                series["traded_market_value"]=df.iloc[i].traded_market_value
+                series["market_value"]=df.iloc[i].market_value
+                series["turnover"]=df.iloc[i].turnover
+                series['date'] = datetime.datetime.strptime(df.iloc[i].date, "%Y-%m-%d")
                 name=code[2:8]
-
-                #check 
-                self.oriprice[name].insert_many(records)
+                #check exits
+                countstock=self.oriprice[name].find({"date":series['date']}).count()
+                if countstock ==0:
+                    print (u"插入股票"+name+str(series["date"])+u"数据")
+                    self.oriprice[name].insert_one(series)
+                else:
+                    print(u"股票"+name+" "+str(series['date'])+u"已经存在")
                 
 
 
@@ -195,16 +155,64 @@ class InsertDataCVS:
             
     def storageindex(self):
         #get the filelist
+        alldatabase=self.index.collection_names()
+
         onlyfiles = [ f for f in listdir(self.indexdata) if isfile(join(self.indexdata,f)) ]
         #read from using pandas
         for f in onlyfiles:
             df = pd.read_csv(self.indexdata+"/"+f)
             s=f.split('.')
             name = s[0][2:8]
+            if name in alldatabase:
+                print(u"指数"+name+u" 2017-2-28之前数据已经在数据库中")
+                continue
             records = json.loads(df.T.to_json()).values()
             for row in records:
                 row['date'] = datetime.datetime.strptime(row['date'], "%Y-%m-%d")
             self.index[name].insert_many(records)
+
+
+        # get stock data in newdata dir
+        onlyfiles = [ f for f in listdir(self.newdata) if isfile(join(self.newdata,f)) ]
+
+        #read from using pandas
+        #print self.connection.collection_names()
+        for f in onlyfiles:
+            fdate=f[0:10]
+            kind=f[11]
+            if kind=='d':
+                continue
+
+            df = pd.read_csv(self.newdata+"/"+f)
+            if len(f) < 12:
+                continue
+
+            codes=df.index_code
+            series={}
+
+
+            for i in range(0,len(codes)):
+                code=df.iloc[i].index_code
+                series["open"]=df.iloc[i].open
+                series["high"]=df.iloc[i].high
+                series["low"]=df.iloc[i].low
+                series["close"]=df.iloc[i].close
+                series["change"]=df.iloc[i].change
+                series["volume"]=df.iloc[i].volume
+                series["money"]=df.iloc[i].money
+                series['date'] = datetime.datetime.strptime(df.iloc[i].date, "%Y-%m-%d")
+                name=code[2:8]
+                #check exits
+                countstock=self.index[name].find({"date":series['date']}).count()
+                if countstock ==0:
+                    print (u"插入指数"+name+str(series["date"])+u"数据")
+                    self.index[name].insert_one(series)
+                else:
+                    print(u"指数"+name+" "+str(series['date'])+u"已经存在")
+
+
+
+
             
     
     
@@ -314,6 +322,7 @@ if __name__ == '__main__':
     #l=LoadDataCVS('127.0.0.1',27017)
     I.Conn()
     I.storagedaily()
+    I.storageindex()
     #I.InsertStock("/Users/zhanghan/Downloads/trading-data-push-20170301/2017-03-01 data.csv")
     #print l.getstockdaily('002759','2016-2-21','2016-7-2')
     # l.Conn()

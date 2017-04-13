@@ -48,10 +48,11 @@ https://github.com/zhanghan1990/zipline/wiki
 - pip3 install jupyter
 
 
-version_1.1.1 完成的主要工作
+
+version_1.1 完成的主要工作
 =======================
 - 对history函数纠正，history[0]代表今天的价格，history[1]代表昨天价格...
-
+- 增加每天行情数据更新，每天行情数据更新，可以使用tushare或者使用本地数据（从tushare 得到的行情数据，是没有每天市场数据，如PE等，因此，我上传了一个数据源，里面包含每天的行情数据，注意，这里的数据还是原始数据)
 
 
 version_1.0 完成的主要工作

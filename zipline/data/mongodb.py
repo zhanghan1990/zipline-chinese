@@ -25,11 +25,7 @@ from pandas import DataFrame
 
 
 class LoadDataCVS:
-
-    basedir="/home/zipline/zipline"
-    stockdata=basedir+"/stock data"
-    indexdata=basedir+"/index data"
-
+    
     #treasurvity 
     in_package_data = range(2002, 2017)
     DONWLOAD_URL = "http://yield.chinabond.com.cn/cbweb-mn/yc/downYearBzqx?year=%s&&wrjxCBFlag=0&&zblx=txy&ycDefId=%s"
