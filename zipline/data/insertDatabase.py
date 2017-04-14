@@ -53,6 +53,8 @@ class InsertDataCVS:
         self.qfqprice=self.client.stockqfqprice #stock qfq price
         self.hfqprice=self.client.stockhfqprice #stock hfq price
 
+        self.test=self.client.test
+
 
 
 
@@ -298,6 +300,21 @@ class InsertDataCVS:
 
         self.treasure['treasure'].insert_many(records)
 
+
+
+    def InsertTodayAll(self,name,series):
+        #check exits
+        countstock=self.test[name].find({"date":series['date']}).count()
+        if countstock ==0:
+            print (u"插入股票"+name+str(series["date"])+u"数据")
+            self.test[name].insert_one(series)
+        else:
+            print(u"股票"+name+" "+str(series['date'])+u"已经存在")
+
+
+
+
+
     def storageStockName(self):
         totalstock=[]
         onlyfiles = [ f for f in listdir(self.stockdata) if isfile(join(self.stockdata,f)) ]
@@ -323,6 +340,7 @@ if __name__ == '__main__':
     I.Conn()
     I.storagedaily()
     I.storageindex()
+
     #I.InsertStock("/Users/zhanghan/Downloads/trading-data-push-20170301/2017-03-01 data.csv")
     #print l.getstockdaily('002759','2016-2-21','2016-7-2')
     # l.Conn()
