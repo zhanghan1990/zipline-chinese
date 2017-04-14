@@ -312,6 +312,8 @@ class InsertDataCVS:
             print(u"股票"+name+" "+str(series['date'])+u"已经存在")
 
 
+    def Close(self):
+        self.client.close()
 
 
 

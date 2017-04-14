@@ -46,6 +46,7 @@ https://github.com/zhanghan1990/zipline/wiki
 - sudo service mongodb start
 - pip install xlrd
 - pip3 install jupyter
+- pip install apscheduler
 
 
 
